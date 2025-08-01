@@ -1,3 +1,4 @@
+from abc import ABC
 from collections import defaultdict
 from enum import Enum
 
@@ -39,6 +40,7 @@ class Player():
         if special_att_cnt > 9:
             return 10
         return 0
+
     def _upadte_bonus_point(self):
         bonus = self.get_attendance_bonus_point(self.weekdays['wednesday'])
         bonus+= self.get_attendance_bonus_point(self.weekdays['saturday']+self.weekdays['sunday'])
@@ -53,7 +55,8 @@ class Player():
             return PlayerGrade.NORMAL
 
     def am_i_removed_player(self):
-        if self.grade not in (PlayerGrade.GOLD, PlayerGrade.SILVER) and self.weekdays['wednesday'] == 0 \
+        if self.grade not in (PlayerGrade.GOLD, PlayerGrade.SILVER) \
+                and self.weekdays['wednesday'] == 0 \
                 and (self.weekdays['saturday']+self.weekdays['sunday']) == 0:
             return True
         return False
@@ -76,24 +79,20 @@ class Manager():
     def __init__(self):
         self.player_dict = {}
 
-    def _update_attendance(self, player:Player, attendance_day:str):
-        player.weekdays[attendance_day]+=1
-
     def update_player_attendance(self, name, attendance_day):
         if self.check_new_player(name):
-            self.player_dict[name] = get_new_player(name)
+            self.player_dict[name] : Player = get_new_player(name)
         self.player_dict[name].update_attendance(attendance_day)
-
+        return self.player_dict[name].id
     def check_new_player(self, player_name):
         if player_name in self.player_dict.keys():
             return False
         return True
 
-
-def main():
+def main(input_filename = INPUT_DATA_FILENAME):
     manager = Manager()
     try:
-        with open(INPUT_DATA_FILENAME, encoding='utf-8') as f:
+        with open(input_filename, encoding='utf-8') as f:
             for _ in range(500):
                 line = f.readline()
                 if not line:
@@ -109,9 +108,10 @@ def main():
         for name in manager.player_dict.keys():
             if (manager.player_dict[name].am_i_removed_player()):
                 print(name)
-
     except FileNotFoundError:
         print("파일을 찾을 수 없습니다.")
+        return False
+    return True
 
 if __name__ == "__main__":
     main()
