@@ -4,6 +4,9 @@ from attendance import get_new_player
 from attendance import Manager
 from attendance import main
 
+from unittest.mock import patch
+from unittest.mock import mock_open
+
 def test_create_Player_with_initial_values():
     player = Player(0, "chris")
     assert player.id == 0
@@ -142,4 +145,9 @@ def test_main_with_invalid_input_filename():
     assert main("fjdkslfjd.txt") ==False
 def test_main():
     assert main("./mission2/attendance_weekday_500.txt") == True
+
+@patch('builtins.open', new_callable=mock_open, read_data=None)
+def test_read_first_line(mock_file):
+  assert main("mocking.txt") == True
+
 

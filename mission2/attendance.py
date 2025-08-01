@@ -113,5 +113,4 @@ def main(input_filename = INPUT_DATA_FILENAME):
         return False
     return True
 
-if __name__ == "__main__":
-    main()
+main()
